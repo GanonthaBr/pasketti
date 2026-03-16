@@ -1,0 +1,14 @@
+# Data - never push to git (too large)
+data/
+models/checkpoints/
+logs/
+
+# Python
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+venv/
+
+# Credentials
+.env
+wandb/
