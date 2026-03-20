@@ -232,9 +232,8 @@ class PaskettiDataset(Dataset):
 
         # Tokenize IPA transcript
         # Tokenize IPA transcript
-        labels = self.processor.tokenizer(
-            utt["phonetic_text"]
-        ).input_ids
+        text = utt["phonetic_text"].replace(" ", "|")
+        labels = self.processor.tokenizer(text).input_ids
 
         return {
             "input_values": input_values,
