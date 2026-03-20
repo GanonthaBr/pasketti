@@ -5,6 +5,7 @@ Run once before training.
 """
 
 import json
+import sys
 from pathlib import Path
 from transformers import (
     Wav2Vec2CTCTokenizer,
@@ -12,9 +13,14 @@ from transformers import (
     Wav2Vec2Processor,
 )
 
-# ── Paths ─────────────────────────────────────────────────────────────────────
-MANIFEST_PATH = Path(r"C:\Users\bgano\Desktop\DataDriven\pasketti\data\drivendata\train_phon_transcripts.jsonl")
-VOCAB_SAVE_DIR = Path(r"C:\Users\bgano\Desktop\DataDriven\pasketti\data\ipa_processor")
+# ── Paths (dynamic - works on Windows and Linux) ──────────────────────────────
+sys.path.insert(0, str(Path(__file__).parent))
+from config import MANIFEST_DD, PROCESSOR_DIR, print_config
+
+print_config()
+
+MANIFEST_PATH  = MANIFEST_DD
+VOCAB_SAVE_DIR = PROCESSOR_DIR
 VOCAB_SAVE_DIR.mkdir(parents=True, exist_ok=True)
 
 # ── Step 1: Build vocab from data ─────────────────────────────────────────────
