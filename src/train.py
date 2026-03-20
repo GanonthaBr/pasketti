@@ -170,7 +170,7 @@ def parse_args():
     parser.add_argument(
         "--learning_rate",
         type=float,
-        default=1e-4,
+        default=3e-5,
         help="Peak learning rate",
     )
     parser.add_argument(
@@ -312,7 +312,8 @@ def main():
         adam_epsilon=1e-8,
 
         # Precision
-        fp16=torch.cuda.is_available(),
+        fp16=False,
+        bf16=True,
 
         # Evaluation
         eval_strategy="steps",
@@ -331,6 +332,9 @@ def main():
         # group_by_length=True,     # speeds up training
         report_to="none",         # change to "wandb" later
         seed=args.seed,
+
+        # Gradient clipping
+        max_grad_norm=1.0,
     )
 
     # ── Trainer ───────────────────────────────────────────────────────────────
@@ -354,7 +358,7 @@ def main():
     trainer.train()
 
     # ── Save best model ───────────────────────────────────────────────────────
-    best_dir = BASE_DIR / "models" / "best" / args.output_dir.split(os.sep)[-1]
+    best_dir = BEST_DIR / args.output_dir.split(os.sep)[-1]
     best_dir.mkdir(parents=True, exist_ok=True)
     trainer.save_model(str(best_dir))
     processor.save_pretrained(str(best_dir))

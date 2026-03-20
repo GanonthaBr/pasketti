@@ -314,17 +314,14 @@ def make_splits(
 
 # ── Quick test ────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
-    """
-    Run this to verify dataset.py works:
-    python src/dataset.py
-    """
     from transformers import Wav2Vec2Processor
+    import sys
+    sys.path.insert(0, str(Path(__file__).parent))
     from config import MANIFEST_DD, DATA_DD, PROCESSOR_DIR
+    import tempfile, os
 
     print("Testing dataset.py...")
     print("=" * 50)
-
-     
 
     MANIFEST   = str(MANIFEST_DD)
     AUDIO_BASE = str(DATA_DD)
@@ -334,29 +331,28 @@ if __name__ == "__main__":
     print("\nCreating train/val split:")
     train_utts, val_utts = make_splits(MANIFEST)
 
-    # Load a tiny processor just to test
+    # Load processor
     print("\nLoading processor...")
-    processor = Wav2Vec2Processor.from_pretrained(
-        r"C:\Users\bgano\Desktop\DataDriven\pasketti\data\ipa_processor"
-    )
+    processor = Wav2Vec2Processor.from_pretrained(PROC_DIR)
 
-    # Test dataset
+    # Test dataset with 50 utterances
     print("\nCreating dataset (first 50 utterances)...")
-
-    # Temporarily monkey-patch to use only 50 utterances
-    import json
-    tmp_manifest = r"C:\Users\bgano\Desktop\DataDriven\pasketti\data\tmp_test.jsonl"
+    tmp = tempfile.NamedTemporaryFile(
+        mode="w", suffix=".jsonl",
+        delete=False, encoding="utf-8"
+    )
     with open(MANIFEST, encoding="utf-8") as f:
         lines = f.readlines()[:50]
-    with open(tmp_manifest, "w", encoding="utf-8") as f:
-        f.writelines(lines)
+    tmp.writelines(lines)
+    tmp.close()
 
     dataset = PaskettiDataset(
-        manifest_path=tmp_manifest,
+        manifest_path=tmp.name,
         audio_base=AUDIO_BASE,
         processor=processor,
         augment=True,
     )
+    os.unlink(tmp.name)
 
     print(f"\nDataset length: {len(dataset)}")
     print("Loading first item...")
@@ -365,9 +361,4 @@ if __name__ == "__main__":
     print(f"  labels:             {item['labels']}")
     print(f"  utterance_id:       {item['utterance_id']}")
     print(f"  age_bucket:         {item['age_bucket']}")
-
     print("\n✅ dataset.py works correctly!")
-
-    # Cleanup
-    import os
-    os.remove(tmp_manifest)
