@@ -43,11 +43,13 @@ from dataset import (
 )
 
 # ── Paths ─────────────────────────────────────────────────────────────────────
-BASE_DIR       = Path(__file__).parent.parent
-DATA_DD        = BASE_DIR / "data" / "drivendata"
-PROCESSOR_DIR  = BASE_DIR / "data" / "ipa_processor"
-CHECKPOINTS    = BASE_DIR / "models" / "checkpoints"
-MANIFEST_DD    = DATA_DD / "train_phon_transcripts.jsonl"
+
+from config import (
+    DATA_DD, PROCESSOR_DIR, CHECKPOINTS_DIR,
+    MANIFEST_DD, BEST_DIR, LOGS_DIR,
+    DEFAULT_MODEL, LARGE_MODEL,
+    print_config,
+)
 
 
 # ── Reproducibility ───────────────────────────────────────────────────────────
@@ -281,10 +283,11 @@ def main():
     model = load_model(args.model_name, processor)
 
     # ── Output directory ──────────────────────────────────────────────────────
+   # ── Output directory ──────────────────────────────────────────────────────
     if args.output_dir is None:
         model_short = args.model_name.split("/")[-1]
         args.output_dir = str(
-            CHECKPOINTS / f"{model_short}_augment{args.augment}"
+            CHECKPOINTS_DIR / f"{model_short}_augment{args.augment}"
         )
     print(f"\nCheckpoints → {args.output_dir}")
 

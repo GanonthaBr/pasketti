@@ -15,11 +15,17 @@ import soundfile as sf
 from typing import Dict, List, Optional, Tuple
 from dataclasses import dataclass
 
-
+import sys
+from pathlib import Path
+sys.path.insert(0, str(Path(__file__).parent))
+from config import TARGET_SR, MIN_DURATION, MAX_DURATION
 # ── Constants ────────────────────────────────────────────────────────────────
-TARGET_SAMPLE_RATE = 16_000
-MIN_DURATION_SEC   = 0.3
-MAX_DURATION_SEC   = 15.0
+
+
+# Replace constants with config values
+TARGET_SAMPLE_RATE = TARGET_SR
+MIN_DURATION_SEC   = MIN_DURATION
+MAX_DURATION_SEC   = MAX_DURATION
 
 
 # ── Collator ─────────────────────────────────────────────────────────────────
@@ -313,12 +319,16 @@ if __name__ == "__main__":
     python src/dataset.py
     """
     from transformers import Wav2Vec2Processor
+    from config import MANIFEST_DD, DATA_DD, PROCESSOR_DIR
 
     print("Testing dataset.py...")
     print("=" * 50)
 
-    MANIFEST = r"C:\Users\bgano\Desktop\DataDriven\pasketti\data\drivendata\train_phon_transcripts.jsonl"
-    AUDIO_BASE = r"C:\Users\bgano\Desktop\DataDriven\pasketti\data\drivendata"
+     
+
+    MANIFEST   = str(MANIFEST_DD)
+    AUDIO_BASE = str(DATA_DD)
+    PROC_DIR   = str(PROCESSOR_DIR)
 
     # Test splits
     print("\nCreating train/val split:")
