@@ -47,11 +47,20 @@ print(f"  Saved vocab to {vocab_file}")
 # ── Step 2: Create tokenizer ──────────────────────────────────────────────────
 print("\nCreating IPA tokenizer...")
 
+# tokenizer = Wav2Vec2CTCTokenizer(
+#     str(vocab_file),
+#     unk_token="[UNK]",
+#     pad_token="[PAD]",
+#     word_delimiter_token=" ",  # space separates words in IPA
+# )
+
 tokenizer = Wav2Vec2CTCTokenizer(
     str(vocab_file),
     unk_token="[UNK]",
     pad_token="[PAD]",
-    word_delimiter_token=" ",  # space separates words in IPA
+    word_delimiter_token=" ",
+    bos_token=None,
+    eos_token=None,
 )
 
 # ── Step 3: Create feature extractor ─────────────────────────────────────────
